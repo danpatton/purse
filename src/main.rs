@@ -1,4 +1,5 @@
 use std::env;
+use std::time::Instant;
 
 fn answer(n: usize) -> u128 {
     fn _idx(i: usize, j: usize, k: usize) -> usize {
@@ -21,14 +22,11 @@ fn answer(n: usize) -> u128 {
                     let k = s + _k;
                     let mut q: u128;
                     if j == 0 {
-                        let top = array[_idx(i-1, j, k)];
-                        // println!("i={}, j={}, k={}, top={}", i, j, k, top);
-                        q = top;
+                        q = array[_idx(i-1, j, k)];
                     } else {
                         let left = array[_idx(i, j-1, k)];
                         let top = array[_idx(i-1, j, k)];
                         let diag = array[_idx(i-1, j-1, k)];
-                        // println!("i={}, j={}, k={}, left={}, top={}, diag={}", i, j, k, left, top, diag);
                         q = left + top - diag;
                     }
                     if z <= k {
@@ -45,8 +43,11 @@ fn answer(n: usize) -> u128 {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let n: usize = args.get(1).expect("missing n").parse().expect("malformed n");
+    let arg = env::args().nth(1).expect("missing n");
+    let n: usize = arg.parse().expect("malformed n");
+    let t1 = Instant::now();
     let a = answer(n);
+    let elapsed = Instant::now() - t1;
     println!("{}", a);
+    println!("Elapsed: {}μs", elapsed.as_micros());
 }

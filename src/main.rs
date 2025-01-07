@@ -1,24 +1,27 @@
 use std::env;
 use std::time::Instant;
 
+const M: usize = 120;
+
+
 fn answer(n: usize) -> u128 {
     fn _idx(i: usize, j: usize, k: usize) -> usize {
-        896 * i + 128 * j + k % 128
+        (7 * M) * i + M * j + k % M
     }
 
     let coins: [usize; 7] = [1, 2, 6, 12, 24, 48, 60];
-    let mut array = [0u128; 6272];
-    for k in (0..128).step_by(2) {
+    let mut array = [0u128; 49 * M];
+    for k in (0..M).step_by(2) {
         array[k] = 1;
     }
 
-    for s in (0..n+1).step_by(128) {
+    for s in (0..n+1).step_by(M) {
         for i in 1..coins.len() {
             let icoin = coins[i];
             for j in 0..i + 1 {
                 let jcoin = coins[j];
                 let z = icoin + jcoin;
-                for _k in 0..128 {
+                for _k in 0..M {
                     let k = s + _k;
                     let mut q: u128;
                     if j == 0 {

@@ -1,16 +1,20 @@
+#![feature(cmp_minmax)]
+use std::cmp;
 use std::env;
 use std::time::Instant;
 
-const M: usize = 120;
+const M: usize = 128;
+static S: [usize; 7] = [0, 1, 3, 6, 10, 15, 21];
 
 
 fn answer(n: usize) -> u128 {
     fn _idx(i: usize, j: usize, k: usize) -> usize {
-        (7 * M) * i + M * j + k % M
+        let [x, y] = cmp::minmax(i, j);
+        (S[y] + x) * M + (k & M-1)
     }
 
     let coins: [usize; 7] = [1, 2, 6, 12, 24, 48, 60];
-    let mut array = [0u128; 49 * M];
+    let mut array = [0u128; 28 * M];
     for k in (0..M).step_by(2) {
         array[k] = 1;
     }
@@ -36,7 +40,6 @@ fn answer(n: usize) -> u128 {
                         q += array[_idx(i, j, k-z)];
                     }
                     array[_idx(i, j, k)] = q;
-                    array[_idx(j, i, k)] = q;
                 }
             }
         }    

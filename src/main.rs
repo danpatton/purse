@@ -3,20 +3,25 @@ use std::cmp;
 use std::env;
 use std::time::Instant;
 
+use bnum::BUint;
+use num::Num;
+
+type U192 = BUint<3>;
+
 const M: usize = 128;
 static S: [usize; 7] = [0, 1, 3, 6, 10, 15, 21];
 
 
-fn answer(n: usize) -> u128 {
+fn answer<T: Num + Copy>(n: usize) -> T {
     fn _idx(i: usize, j: usize, k: usize) -> usize {
         let [x, y] = cmp::minmax(i, j);
         (S[y] + x) * M + (k & M-1)
     }
 
     let coins: [usize; 7] = [1, 2, 6, 12, 24, 48, 60];
-    let mut arr = [0u128; 28 * M];
+    let mut arr = [T::zero(); 28 * M];
     for k in (0..M).step_by(2) {
-        arr[k] = 1;
+        arr[k] = T::one();
     }
 
     for s in (0..n+1).step_by(M) {
@@ -46,9 +51,17 @@ fn answer(n: usize) -> u128 {
 fn main() {
     let arg = env::args().nth(1).expect("missing n");
     let n: usize = arg.parse().expect("malformed n");
-    let t1 = Instant::now();
-    let a = answer(n);
-    let elapsed = Instant::now() - t1;
-    println!("{}", a);
-    println!("Elapsed: {}μs", elapsed.as_micros());
+    if n > 4800 {
+        let t1 = Instant::now();
+        let a: U192 = answer(n);
+        let elapsed = Instant::now() - t1;
+        println!("{}", a);
+        println!("Elapsed: {}μs", elapsed.as_micros());    
+    } else {
+        let t1 = Instant::now();
+        let a: u128 = answer(n);
+        let elapsed = Instant::now() - t1;
+        println!("{}", a);
+        println!("Elapsed: {}μs", elapsed.as_micros());    
+    }
 }

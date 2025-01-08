@@ -14,6 +14,7 @@ static S: [usize; 7] = [0, 1, 3, 6, 10, 15, 21];
 
 
 fn answer<T: Num + Copy>(n: usize) -> T {
+    #[inline(always)]
     fn _idx(i: usize, j: usize, k: usize) -> usize {
         let [x, y] = cmp::minmax(i, j);
         (S[y] + x) * M + (k & M-1)

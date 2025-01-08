@@ -1,7 +1,8 @@
 #![feature(cmp_minmax)]
+use core::fmt::Display;
 use std::cmp;
 use std::env;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use bnum::BUint;
 use num::Num;
@@ -48,20 +49,25 @@ fn answer<T: Num + Copy>(n: usize) -> T {
     arr[_idx(6, 6, n)]
 }
 
+fn print_result<TResult: Display>(result: TResult, dur: Duration) {
+    println!("{}", result);
+    if dur.as_micros() >= 1000 {
+        println!("Elapsed: {:.1}ms", dur.as_secs_f64() * 1e3);
+    } else {
+        println!("Elapsed: {}μs", dur.as_micros());
+    }
+}
+
 fn main() {
     let arg = env::args().nth(1).expect("missing n");
     let n: usize = arg.parse().expect("malformed n");
     if n > 4800 {
         let t1 = Instant::now();
         let a: U192 = answer(n);
-        let elapsed = Instant::now() - t1;
-        println!("{}", a);
-        println!("Elapsed: {}μs", elapsed.as_micros());    
+        print_result(a, Instant::now() - t1);
     } else {
         let t1 = Instant::now();
         let a: u128 = answer(n);
-        let elapsed = Instant::now() - t1;
-        println!("{}", a);
-        println!("Elapsed: {}μs", elapsed.as_micros());    
+        print_result(a, Instant::now() - t1);
     }
 }
